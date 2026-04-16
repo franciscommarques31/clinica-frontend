@@ -1,0 +1,139 @@
+.consulta { 
+  background: #fff; 
+  padding: 80px 0; 
+}
+
+.consulta-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 60px; 
+  align-items: center; 
+}
+
+.consulta-tag {
+  font-size: 12px; 
+  letter-spacing: 2px; 
+  text-transform: uppercase;
+  color: #0192bc; 
+  display: block; 
+  margin-bottom: 12px;
+}
+
+.consulta-texto h2 { 
+  font-size: 38px; 
+  margin-bottom: 24px; 
+  color: #0192bc; 
+  line-height: 1.2; 
+}
+
+.consulta-texto p { 
+  font-size: 15px; 
+  line-height: 1.8; 
+  color: #0192bc; 
+  margin-bottom: 16px; 
+}
+
+.consulta-texto p strong { 
+  color: #0192bc; 
+}
+
+.consulta-btns { 
+  display: flex; 
+  gap: 16px; 
+  margin-top: 24px; 
+  flex-wrap: wrap; 
+}
+
+/* IMAGEM — card com foto circular */
+.consulta-imagem {
+  display: flex;
+  justify-content: center;
+}
+
+.consulta-card {
+  position: relative;
+  width: fit-content;
+  padding: 32px 40px;
+  background: rgba(1, 146, 188, 0.06);
+  border: 1px solid rgba(1, 146, 188, 0.15);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.consulta-anel-1 {
+  position: absolute;
+  inset: calc(32px - 14px) calc(40px - 14px);
+  border-radius: 50%;
+  border: 1px solid rgba(1, 146, 188, 0.2);
+  pointer-events: none;
+}
+
+.consulta-anel-2 {
+  position: absolute;
+  inset: calc(32px - 28px) calc(40px - 28px);
+  border-radius: 50%;
+  border: 1px solid rgba(1, 146, 188, 0.1);
+  pointer-events: none;
+}
+
+.consulta-arco-svg {
+  position: absolute;
+  inset: calc(32px - 18px) calc(40px - 18px);
+  width: calc(100% - 2*(40px - 18px));
+  height: calc(100% - 2*(32px - 18px));
+  pointer-events: none;
+}
+
+.consulta-foto-circulo {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(1, 146, 188, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.consulta-foto-circulo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* BOTÕES */
+.consulta .btn-gold {
+  border-color: #0192bc;
+  color: #0192bc;
+}
+
+.consulta .btn-gold:hover { 
+  background-color: #0192bc; 
+  color: #fff; 
+}
+
+.consulta .btn-gold-fill {
+  background-color: #0192bc;
+  border-color: #0192bc;  
+  color: #fff;
+}
+
+.consulta .btn-gold-fill:hover { 
+  background-color: transparent; 
+  color: #0192bc; 
+}
+
+@media (max-width: 768px) { 
+  .consulta-grid { 
+    grid-template-columns: 1fr; 
+  }
+
+  .consulta-foto-circulo {
+    width: 220px;
+    height: 220px;
+  }
+}

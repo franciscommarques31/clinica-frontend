@@ -1,0 +1,437 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+.branq-page {
+  font-family: 'DM Sans', sans-serif;
+  padding-top: 80px;
+}
+
+/* ── HERO ── */
+.branq-hero {
+  background: #fff;
+  padding: 64px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.branq-hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.branq-tag {
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #0192bc;
+  display: block;
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+
+.branq-hero-texto h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700;
+  color: #0192bc;
+  line-height: 1.1;
+  margin: 0 0 24px 0;
+}
+
+.branq-hero-texto h1 em {
+  font-style: italic;
+  color: rgba(1,146,188,0.7);
+}
+
+.branq-hero-texto p {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #444;
+  margin: 0 0 14px 0;
+}
+
+.branq-hero-card {
+  background: #0192bc;
+  border-radius: 16px;
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.branq-hero-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.branq-hero-card-tag {
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  display: block;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.branq-hero-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 16px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.branq-hero-card p {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.85);
+  margin: 0 0 24px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-branq-cta {
+  background: #fff;
+  color: #0192bc;
+  border: none;
+  padding: 12px 28px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: 30px;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s ease;
+}
+
+.btn-branq-cta:hover {
+  background: rgba(255,255,255,0.85);
+}
+
+/* ── VANTAGENS ── */
+.branq-vantagens {
+  background: #0192bc;
+  padding: 64px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.branq-vantagens::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.branq-vantagens-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.branq-section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.branq-tag-white {
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.branq-section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.branq-section-header h2 em {
+  font-style: italic;
+  color: rgba(255,255,255,0.75);
+}
+
+.branq-divisor {
+  width: 48px;
+  height: 2px;
+  background: rgba(255,255,255,0.35);
+  margin: 20px auto 0;
+}
+
+.branq-vantagens-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.branq-vantagem-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: background 0.2s ease;
+}
+
+.branq-vantagem-card:hover {
+  background: rgba(255,255,255,0.14);
+}
+
+.branq-vantagem-icone {
+  font-size: 24px;
+}
+
+.branq-vantagem-card h3 {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.branq-vantagem-card p {
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.75);
+  margin: 0;
+}
+
+/* ── SORRISO CUIDADO ── */
+.branq-sorriso {
+  background: #fff;
+  padding: 64px 0;
+}
+
+.branq-sorriso-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.branq-sorriso-imagem {
+  display: flex;
+  justify-content: center;
+}
+
+.branq-foto-wrapper {
+  position: relative;
+  width: 320px;
+  height: 320px;
+}
+
+.branq-anel-1 {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1px solid rgba(1,146,188,0.2);
+  pointer-events: none;
+}
+
+.branq-anel-2 {
+  position: absolute;
+  inset: -28px;
+  border-radius: 50%;
+  border: 1px solid rgba(1,146,188,0.1);
+  pointer-events: none;
+}
+
+.branq-foto-circulo {
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(1,146,188,0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.branq-foto-circulo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.branq-sorriso-texto .branq-tag {
+  color: #0192bc;
+}
+
+.branq-sorriso-texto h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  color: #0192bc;
+  line-height: 1.15;
+  margin: 0 0 24px 0;
+}
+
+.branq-sorriso-texto h2 em {
+  font-style: italic;
+  color: rgba(1,146,188,0.7);
+}
+
+.branq-sorriso-texto p {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #444;
+  margin: 0 0 14px 0;
+}
+
+/* ── FAQ ── */
+.branq-faq {
+  background: #0192bc;
+  padding: 64px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.branq-faq::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.branq-faq-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.branq-faq-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+
+.branq-faq-item {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.branq-faq-item:hover,
+.branq-faq-item.aberto {
+  background: rgba(255,255,255,0.14);
+}
+
+.branq-faq-pergunta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #fff;
+}
+
+.branq-faq-icone {
+  font-size: 20px;
+  color: rgba(255,255,255,0.6);
+  flex-shrink: 0;
+}
+
+.branq-faq-resposta {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.78);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+.branq-faq-paragrafo {
+  margin: 0 0 18px 0;
+}
+
+.branq-faq-paragrafo:last-child {
+  margin-bottom: 0;
+}
+
+.branq-faq-cta {
+  text-align: center;
+}
+
+.btn-branq-cta-outline {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.5);
+  padding: 14px 32px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-branq-cta-outline:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .branq-hero-inner,
+  .branq-sorriso-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .branq-vantagens-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .branq-foto-wrapper,
+  .branq-foto-circulo {
+    width: 240px;
+    height: 240px;
+  }
+}
