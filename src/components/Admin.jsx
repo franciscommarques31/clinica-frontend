@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Admin.css'
 
+const API_URL = import.meta.env.VITE_API_URL
+
 export default function Admin() {
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState('dashboard')
@@ -16,15 +18,44 @@ export default function Admin() {
 
   // Formulários
   const [inviteEmail, setInviteEmail] = useState('')
-  const [newStaff, setNewStaff] = useState({ name: '', specialty: '', photo: '' })
-  const [newConsultation, setNewConsultation] = useState({ patientId: '', date: '', description: '', status: '' })
-  const [newInvoice, setNewInvoice] = useState({ patientId: '', file: '' })
+  const [newStaff, setNewStaff] = useState({
+    name: '',
+    specialty: '',
+    file: null,
+    role: 'medico'
+  })
+
+  const [editStaffId, setEditStaffId] = useState(null)
+
+  const [editStaff, setEditStaff] = useState({
+    name: '',
+    specialty: '',
+    role: 'medico'
+  })
+
+  const [newConsultation, setNewConsultation] = useState({
+    patientId: '',
+    date: '',
+    description: '',
+    status: ''
+  })
+
+  const [newInvoice, setNewInvoice] = useState({
+    patientId: '',
+    file: ''
+  })
 
   const token = localStorage.getItem('token')
-  const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  }
 
   useEffect(() => {
-    if (!token) { navigate('/login'); return }
+    if (!token) {
+      navigate('/login')
+      return
+    }
     fetchAll()
   }, [])
 
@@ -36,80 +67,193 @@ export default function Admin() {
   }
 
   const fetchAppointments = async () => {
-    const res = await fetch('http://localhost:5000/api/appointment-requests', { headers })
+    const res = await fetch(`${API_URL}/api/appointment-requests`, { headers })
     setAppointments(await res.json())
   }
 
   const fetchPatients = async () => {
-    const res = await fetch('http://localhost:5000/api/patients', { headers })
+    const res = await fetch(`${API_URL}/api/patients`, { headers })
     setPatients(await res.json())
   }
 
   const fetchInvites = async () => {
-    const res = await fetch('http://localhost:5000/api/invites', { headers })
+    const res = await fetch(`${API_URL}/api/invites`, { headers })
     setInvites(await res.json())
   }
 
   const fetchStaff = async () => {
-    const res = await fetch('http://localhost:5000/api/staff', { headers })
+    const res = await fetch(`${API_URL}/api/staff`, { headers })
     setStaff(await res.json())
   }
 
   const fetchConsultations = async (patientId) => {
-    const res = await fetch(`http://localhost:5000/api/consultations/patient/${patientId}`, { headers })
-    setConsultations(await res.json())
+    if (!patientId) {
+      setConsultations([])
+      return
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/consultations/patient/${patientId}`, { headers })
+
+      if (!res.ok) {
+        setConsultations([])
+        return
+      }
+
+      const data = await res.json()
+      setConsultations(data)
+    } catch (err) {
+      console.error('Erro consultations:', err)
+      setConsultations([])
+    }
   }
 
   const fetchInvoices = async (patientId) => {
-    const res = await fetch(`http://localhost:5000/api/invoices/patient/${patientId}`, { headers })
-    setInvoices(await res.json())
+    if (!patientId) {
+      setInvoices([])
+      return
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/invoices/patient/${patientId}`, { headers })
+
+      if (!res.ok) {
+        setInvoices([])
+        return
+      }
+
+      const data = await res.json()
+      setInvoices(data)
+    } catch (err) {
+      console.error('Erro invoices:', err)
+      setInvoices([])
+    }
   }
 
   const createInvite = async () => {
     if (!inviteEmail) return alert('Insira um email')
-    await fetch('http://localhost:5000/api/invites', {
-      method: 'POST', headers,
+
+    await fetch(`${API_URL}/api/invites`, {
+      method: 'POST',
+      headers,
       body: JSON.stringify({ email: inviteEmail })
     })
+
     setInviteEmail('')
     fetchInvites()
   }
 
   const deleteInvite = async (id) => {
-    await fetch(`http://localhost:5000/api/invites/${id}`, { method: 'DELETE', headers })
+    await fetch(`${API_URL}/api/invites/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+
     fetchInvites()
   }
 
   const createStaff = async () => {
-    await fetch('http://localhost:5000/api/staff', {
-      method: 'POST', headers,
-      body: JSON.stringify(newStaff)
+    const formData = new FormData()
+    formData.append('name', newStaff.name)
+    formData.append('specialty', newStaff.specialty)
+    formData.append('role', newStaff.role || 'medico')
+
+    if (newStaff.file) {
+      formData.append('photo', newStaff.file)
+    }
+
+    await fetch(`${API_URL}/api/staff`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
     })
-    setNewStaff({ name: '', specialty: '', photo: '' })
+
+    setNewStaff({
+      name: '',
+      specialty: '',
+      file: null,
+      role: 'medico'
+    })
+
     fetchStaff()
   }
 
   const deleteStaff = async (id) => {
-    await fetch(`http://localhost:5000/api/staff/${id}`, { method: 'DELETE', headers })
+    await fetch(`${API_URL}/api/staff/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+
+    fetchStaff()
+  }
+
+  const startEditStaff = (member) => {
+    setEditStaffId(member._id)
+
+    setEditStaff({
+      name: member.name,
+      specialty: member.specialty,
+      role: member.role
+    })
+  }
+
+  const saveEditStaff = async () => {
+    await fetch(`${API_URL}/api/staff/${editStaffId}`, {
+      method: 'PUT',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(editStaff)
+    })
+
+    setEditStaffId(null)
+
+    setEditStaff({
+      name: '',
+      specialty: '',
+      role: 'medico'
+    })
+
     fetchStaff()
   }
 
   const createConsultation = async () => {
-    await fetch('http://localhost:5000/api/consultations', {
-      method: 'POST', headers,
+    await fetch(`${API_URL}/api/consultations`, {
+      method: 'POST',
+      headers,
       body: JSON.stringify(newConsultation)
     })
-    setNewConsultation({ patientId: '', date: '', description: '', status: '' })
-    if (newConsultation.patientId) fetchConsultations(newConsultation.patientId)
+
+    setNewConsultation({
+      patientId: '',
+      date: '',
+      description: '',
+      status: ''
+    })
+
+    if (newConsultation.patientId) {
+      fetchConsultations(newConsultation.patientId)
+    }
   }
 
   const createInvoice = async () => {
-    await fetch('http://localhost:5000/api/invoices', {
-      method: 'POST', headers,
+    await fetch(`${API_URL}/api/invoices`, {
+      method: 'POST',
+      headers,
       body: JSON.stringify(newInvoice)
     })
-    setNewInvoice({ patientId: '', file: '' })
-    if (newInvoice.patientId) fetchInvoices(newInvoice.patientId)
+
+    setNewInvoice({
+      patientId: '',
+      file: ''
+    })
+
+    if (newInvoice.patientId) {
+      fetchInvoices(newInvoice.patientId)
+    }
   }
 
   const logout = () => {
@@ -434,45 +578,168 @@ export default function Admin() {
           )}
 
           {/* STAFF */}
-          {activeSection === 'staff' && (
-            <>
-              <div className="form-card">
-                <h3 className="form-title">Adicionar membro</h3>
-                <div className="form-grid">
-                  <input className="admin-input" placeholder="Nome" value={newStaff.name}
-                    onChange={(e) => setNewStaff({ ...newStaff, name: e.target.value })} />
-                  <input className="admin-input" placeholder="Especialidade" value={newStaff.specialty}
-                    onChange={(e) => setNewStaff({ ...newStaff, specialty: e.target.value })} />
-                  <input className="admin-input" placeholder="URL da foto" value={newStaff.photo}
-                    onChange={(e) => setNewStaff({ ...newStaff, photo: e.target.value })} />
-                </div>
-                <button className="admin-btn" onClick={createStaff}>Adicionar</button>
-              </div>
+{activeSection === 'staff' && (
+  <>
+    {/* ➜ FORM ADICIONAR */}
+    <div className="form-card">
+      <h3 className="form-title">Adicionar membro</h3>
 
-              <div className="table-wrap">
-                <table>
-                  <thead>
-                    <tr><th>Nome</th><th>Especialidade</th><th>Foto</th><th></th></tr>
-                  </thead>
-                  <tbody>
-                    {staff.map((s, i) => (
-                      <tr key={i}>
-                        <td>{s.name}</td>
-                        <td>{s.specialty}</td>
-                        <td>{s.photo || '—'}</td>
-                        <td>
-                          <button className="btn-danger" onClick={() => deleteStaff(s._id)}>Apagar</button>
-                        </td>
-                      </tr>
-                    ))}
-                    {staff.length === 0 && (
-                      <tr><td colSpan={4} className="empty">Sem membros</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </>
+      <div className="form-grid">
+        <input
+          className="admin-input"
+          placeholder="Nome"
+          value={newStaff.name}
+          onChange={(e) => setNewStaff({ ...newStaff, name: e.target.value })}
+        />
+
+        <input
+          className="admin-input"
+          placeholder="Especialidade"
+          value={newStaff.specialty}
+          onChange={(e) => setNewStaff({ ...newStaff, specialty: e.target.value })}
+        />
+
+        <select
+          className="admin-input"
+          value={newStaff.role}
+          onChange={(e) => setNewStaff({ ...newStaff, role: e.target.value })}
+        >
+          <option value="medico">Médico</option>
+          <option value="assistente">Assistente</option>
+        </select>
+
+        <input
+          className="admin-input"
+          type="file"
+          onChange={(e) =>
+            setNewStaff({ ...newStaff, file: e.target.files[0] })
+          }
+        />
+      </div>
+
+      <button className="admin-btn" onClick={createStaff}>
+        Adicionar
+      </button>
+    </div>
+
+    {/* ➜ FORM EDITAR */}
+    {editStaffId && (
+      <div className="form-card">
+        <h3 className="form-title">Editar membro da equipa</h3>
+
+        <div className="form-grid">
+          <input
+            className="admin-input"
+            placeholder="Nome"
+            value={editStaff.name}
+            onChange={(e) =>
+              setEditStaff({ ...editStaff, name: e.target.value })
+            }
+          />
+
+          <input
+            className="admin-input"
+            placeholder="Especialidade"
+            value={editStaff.specialty}
+            onChange={(e) =>
+              setEditStaff({ ...editStaff, specialty: e.target.value })
+            }
+          />
+
+          <select
+            className="admin-input"
+            value={editStaff.role}
+            onChange={(e) =>
+              setEditStaff({ ...editStaff, role: e.target.value })
+            }
+          >
+            <option value="medico">Médico</option>
+            <option value="assistente">Assistente</option>
+          </select>
+        </div>
+
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="admin-btn" onClick={saveEditStaff}>
+            Guardar
+          </button>
+
+          <button
+            className="btn-danger"
+            onClick={() => setEditStaffId(null)}
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    )}
+
+    {/* ➜ TABELA */}
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Especialidade</th>
+            <th>Foto</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {staff.map((s, i) => (
+            <tr key={i}>
+              <td>{s.name}</td>
+              <td>{s.specialty}</td>
+
+              <td>
+                {s.photo ? (
+                  <img
+                    src={s.photo}
+                    alt={s.name}
+                    style={{
+                      width: '45px',
+                      height: '45px',
+                      objectFit: 'cover',
+                      borderRadius: '50%'
+                    }}
+                  />
+                ) : (
+                  '—'
+                )}
+              </td>
+
+              <td>
+                <button
+                  type="button"
+                  className="admin-btn"
+                  style={{ marginRight: 8, background: '#555' }}
+                  onClick={() => startEditStaff(s)}
+                >
+                  Editar
+                </button>
+
+                <button
+                  className="btn-danger"
+                  onClick={() => deleteStaff(s._id)}
+                >
+                  Apagar
+                </button>
+              </td>
+            </tr>
+          ))}
+
+          {staff.length === 0 && (
+            <tr>
+              <td colSpan={4} className="empty">
+                Sem membros
+              </td>
+            </tr>
           )}
+        </tbody>
+      </table>
+    </div>
+  </>
+)}
 
         </div>
       </div>

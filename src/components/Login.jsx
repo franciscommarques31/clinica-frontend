@@ -9,6 +9,9 @@ export default function Login() {
   const [erro, setErro] = useState('')
   const navigate = useNavigate()
 
+  // 🌍 API BASE URL (local + produção)
+  const API = import.meta.env.VITE_API_URL
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -23,7 +26,7 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${API}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -36,10 +39,7 @@ export default function Login() {
         return
       }
 
-      // ✅ guardar token
       localStorage.setItem('token', data.token)
-
-      // ✅ redirecionar
       navigate('/admin')
 
     } catch (error) {
@@ -61,7 +61,11 @@ export default function Login() {
           <span className="login-logo-main">CLÍNICA</span>
           <span className="login-logo-sub">Dentária de São Francisco</span>
         </div>
-        <h2 className="login-tagline">A sua saúde oral<br />em boas mãos</h2>
+
+        <h2 className="login-tagline">
+          A sua saúde oral<br />em boas mãos
+        </h2>
+
         <p className="login-desc">
           Aceda à sua área reservada para gerir marcações e consultar o seu histórico.
         </p>
@@ -72,7 +76,6 @@ export default function Login() {
           <p className="login-form-tag">Área reservada</p>
           <h2 className="login-form-title">Entrar na conta</h2>
 
-          {/* ✅ ERRO VISUAL */}
           {erro && (
             <p style={{ color: 'red', marginBottom: '16px', fontSize: '13px' }}>
               {erro}
@@ -80,9 +83,8 @@ export default function Login() {
           )}
 
           <div className="login-field">
-            <label htmlFor="email">Email</label>
+            <label>Email</label>
             <input
-              id="email"
               type="email"
               placeholder="o-seu-email@exemplo.com"
               value={email}
@@ -93,9 +95,8 @@ export default function Login() {
           </div>
 
           <div className="login-field">
-            <label htmlFor="password">Password</label>
+            <label>Password</label>
             <input
-              id="password"
               type="password"
               placeholder="••••••••"
               value={password}
@@ -109,7 +110,11 @@ export default function Login() {
             <a href="/recuperar-password">Esqueceu a password?</a>
           </div>
 
-          <button className="login-btn" onClick={handleLogin} disabled={loading}>
+          <button
+            className="login-btn"
+            onClick={handleLogin}
+            disabled={loading}
+          >
             {loading ? 'A entrar...' : 'Entrar'}
           </button>
 
