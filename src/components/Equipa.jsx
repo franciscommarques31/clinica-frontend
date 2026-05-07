@@ -18,6 +18,7 @@ function Card({ membro }) {
             className="equipa-card-foto"
             src={membro.photo}
             alt={membro.name}
+            loading="lazy"
             onError={() => setFotoError(true)}
           />
         ) : (
@@ -38,12 +39,14 @@ function Card({ membro }) {
 export default function Equipa() {
   const [staff, setStaff] = useState([])
   const [ativo, setAtivo] = useState('medico')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetch(`${API_URL}/api/staff`)
       .then(res => res.json())
       .then(data => setStaff(data))
       .catch(err => console.error('Erro staff:', err))
+      .finally(() => setLoading(false))
   }, [])
 
   const filtrados = staff.filter(s =>
@@ -78,13 +81,20 @@ export default function Equipa() {
         </div>
 
         <div className={`equipa-grid-wrapper equipa-grid-wrapper--${ativo === 'medico' ? '4' : '3'}`}>
-          {filtrados.map((m, i) => (
-            <Card membro={m} key={i} />
-          ))}
 
-          {filtrados.length === 0 && (
+          {/* LOADING */}
+          {loading ? (
+            Array(4).fill(0).map((_, i) => (
+              <div key={i} className="equipa-card skeleton"></div>
+            ))
+          ) : filtrados.length === 0 ? (
             <p style={{ textAlign: 'center' }}>Sem membros</p>
+          ) : (
+            filtrados.map((m, i) => (
+              <Card membro={m} key={i} />
+            ))
           )}
+
         </div>
 
       </div>
