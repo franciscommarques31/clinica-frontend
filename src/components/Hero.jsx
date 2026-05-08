@@ -6,7 +6,7 @@ export default function Hero() {
       
       <video
         className="hero-bg-video"
-        src="/video.mp4" 
+        src="/video_clinica.mp4" 
         autoPlay
         loop
         muted
