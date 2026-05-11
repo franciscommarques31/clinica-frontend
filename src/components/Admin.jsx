@@ -152,6 +152,16 @@ export default function Admin() {
     fetchInvites()
   }
 
+  const deleteAppointment = async (id) => {
+    await fetch(`${API_URL}/api/appointment-requests/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+
+    fetchAppointments()
+  }
+
+
   const createStaff = async () => {
     const formData = new FormData()
     formData.append('name', newStaff.name)
@@ -406,10 +416,19 @@ export default function Admin() {
                         <td>{a.email}</td>
                         <td>{a.phone}</td>
                         <td>{a.message}</td>
+
+                        <td>
+                          <button
+                            className="btn-danger"
+                            onClick={() => deleteAppointment(a._id)}
+                          >
+                            Apagar
+                          </button>
+                        </td>
                       </tr>
                     ))}
                     {appointments.length === 0 && (
-                      <tr><td colSpan={4} className="empty">Sem pedidos</td></tr>
+                      <td colSpan={5} className="empty">Sem pedidos</td>
                     )}
                   </tbody>
                 </table>
