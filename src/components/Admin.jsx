@@ -447,17 +447,19 @@ export default function Admin() {
 
         <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {availableSlots.map((slot, i) => (
-            <span
-              key={i}
-              style={{
-                padding: '6px 10px',
-                border: '1px solid #0192bc',
-                borderRadius: 6,
-                fontSize: 12
-              }}
-            >
-              {slot}
-            </span>
+          <span
+            key={i}
+            style={{
+              padding: '6px 10px',
+              border: '1px solid #0192bc',
+              borderRadius: 6,
+              fontSize: 12,
+              color: '#000',
+              background: '#fff'
+            }}
+          >
+            {slot}
+          </span>
           ))}
       </div>
     </div>
