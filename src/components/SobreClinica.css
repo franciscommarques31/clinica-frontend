@@ -120,13 +120,13 @@
   display: block;
 }
 
-.stat-label {
+.sobre .stat-label {
   font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  color: rgba(247, 244, 244, 0.5);
   display: block;
-  margin-top: 5px;
+  margin-top: 12px;
 }
 
 /* ── PAINEL DIREITO ── */

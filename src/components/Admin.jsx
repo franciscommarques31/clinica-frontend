@@ -363,8 +363,8 @@ export default function Admin() {
                 </div>
                 <div className="stat-card">
                   <div className="stat-label">Pedidos</div>
-                  <div className="stat-val">{appointments.length}</div>
-                  <div className="stat-sub">por responder</div>
+<div className="stat-val">{appointments.filter(a => a.status === 'pending').length}</div>
+<div className="stat-sub">por responder</div>
                 </div>
                 <div className="stat-card">
                   <div className="stat-label">Convites</div>
@@ -385,7 +385,8 @@ export default function Admin() {
                     <tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Mensagem</th><th>Data</th><th>Hora</th><th>Estado</th></tr>
                   </thead>
                       <tbody>
-                    {appointments.slice(0, 5).map((a, i) => (
+                    {appointments.filter(a => a.status === 'pending').slice(0, 5).map((a, i) => (
+
                       <tr key={i}>
                         <td>{a.name}</td>
                         <td>{a.email}</td>
