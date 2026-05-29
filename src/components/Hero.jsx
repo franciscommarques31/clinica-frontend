@@ -6,12 +6,18 @@ const API_URL = import.meta.env.VITE_API_URL
 export default function Hero() {
   const [showForm, setShowForm] = useState(false)
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  })
+    const [formData, setFormData] = useState({
+      
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+
+      appointmentDate: '',
+      appointmentTime: ''
+    })
+
+    const [availableSlots, setAvailableSlots] = useState([])
 
   const handleChange = (e) => {
     setFormData({
@@ -19,6 +25,22 @@ export default function Hero() {
       [e.target.name]: e.target.value
     })
   }
+
+  const fetchAvailableSlots = async (date) => {
+  if (!date) return
+
+  try {
+    const res = await fetch(
+      `${API_URL}/api/appointment-requests/available-slots/${date}`
+    )
+
+    const data = await res.json()
+    setAvailableSlots(data)
+
+  } catch (err) {
+    console.error(err)
+  }
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -43,7 +65,10 @@ export default function Hero() {
         name: '',
         email: '',
         phone: '',
-        message: ''
+        message: '',
+
+        appointmentDate: '',
+        appointmentTime: ''
       })
 
       setShowForm(false)
@@ -131,6 +156,39 @@ export default function Hero() {
                 onChange={handleChange}
                 rows="4"
               />
+
+              <input
+                type="date"
+                name="appointmentDate"
+                value={formData.appointmentDate}
+                onChange={(e) => {
+                  const date = e.target.value
+
+                  setFormData({
+                    ...formData,
+                    appointmentDate: date,
+                    appointmentTime: ""
+                  })
+
+                  fetchAvailableSlots(date)
+                }}
+                required
+              />
+
+              <select
+                name="appointmentTime"
+                value={formData.appointmentTime}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Escolher hora</option>
+
+                {availableSlots.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot}
+                  </option>
+                ))}
+              </select>
 
               <button type="submit" className="btn-gold-fill">
                 Enviar pedido

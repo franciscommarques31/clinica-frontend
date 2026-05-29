@@ -10,6 +10,7 @@ export default function Admin() {
 
   // Estados
   const [appointments, setAppointments] = useState([])
+  const [availableSlots, setAvailableSlots] = useState([])
   const [patients, setPatients] = useState([])
   const [invites, setInvites] = useState([])
   const [consultations, setConsultations] = useState([])
@@ -381,20 +382,40 @@ export default function Admin() {
               <div className="table-wrap">
                 <table>
                   <thead>
-                    <tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Mensagem</th></tr>
+                    <tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Mensagem</th><th>Data</th><th>Hora</th><th>Estado</th></tr>
                   </thead>
-                  <tbody>
+                      <tbody>
                     {appointments.slice(0, 5).map((a, i) => (
                       <tr key={i}>
                         <td>{a.name}</td>
                         <td>{a.email}</td>
                         <td>{a.phone}</td>
                         <td>{a.message}</td>
+
+                        {/* DATA */}
+                        <td>
+                          {a.appointmentDate
+                            ? new Date(a.appointmentDate).toLocaleDateString('pt-PT')
+                            : '—'}
+                        </td>
+
+                        {/* HORA */}
+                        <td>{a.appointmentTime || '—'}</td>
+
+                        {/* ESTADO */}
+                        <td>
+                          <span
+                            className={
+                              a.status === 'confirmed'
+                                ? 'badge badge-green'
+                                : 'badge badge-orange'
+                            }
+                          >
+                            {a.status || 'pending'}
+                          </span>
+                        </td>
                       </tr>
                     ))}
-                    {appointments.length === 0 && (
-                      <tr><td colSpan={4} className="empty">Sem pedidos</td></tr>
-                    )}
                   </tbody>
                 </table>
               </div>
@@ -404,37 +425,116 @@ export default function Admin() {
           {/* PEDIDOS DE CONSULTA */}
           {activeSection === 'appointments' && (
             <>
-              <div className="table-wrap">
-                <table>
-                  <thead>
-                    <tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Mensagem</th></tr>
-                  </thead>
-                  <tbody>
-                    {appointments.map((a, i) => (
-                      <tr key={i}>
-                        <td>{a.name}</td>
-                        <td>{a.email}</td>
-                        <td>{a.phone}</td>
-                        <td>{a.message}</td>
+    <div className="form-card">
+      <h3 className="form-title">Ver horários disponíveis</h3>
 
-                        <td>
-                          <button
-                            className="btn-danger"
-                            onClick={() => deleteAppointment(a._id)}
-                          >
-                            Apagar
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                    {appointments.length === 0 && (
-                      <td colSpan={5} className="empty">Sem pedidos</td>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
+        <input
+          className="admin-input"
+          type="date"
+          onChange={async (e) => {
+            const date = e.target.value
+            if (!date) return
+
+            const res = await fetch(
+              `${API_URL}/api/appointment-requests/available-slots/${date}`,
+              { headers }
+            )
+
+            const data = await res.json()
+            setAvailableSlots(data)
+          }}
+        />
+
+        <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {availableSlots.map((slot, i) => (
+            <span
+              key={i}
+              style={{
+                padding: '6px 10px',
+                border: '1px solid #0192bc',
+                borderRadius: 6,
+                fontSize: 12
+              }}
+            >
+              {slot}
+            </span>
+          ))}
+      </div>
+    </div>
+
+    {/* 👇 TABELA JÁ EXISTENTE */}
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Mensagem</th>
+            <th>Data</th>
+            <th>Hora</th>
+            <th>Estado</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {appointments.map((a, i) => (
+            <tr key={i}>
+              <td>{a.name}</td>
+              <td>{a.email}</td>
+              <td>{a.phone}</td>
+              <td>{a.message}</td>
+              <td>
+                {a.appointmentDate
+                  ? new Date(a.appointmentDate).toLocaleDateString('pt-PT')
+                  : '—'}
+              </td>
+                <td>{a.appointmentTime}</td>
+
+                <td>
+                  <span
+                    className={
+                      a.status === 'confirmed'
+                        ? 'badge badge-green'
+                        : 'badge badge-orange'
+                    }
+                  >
+                    {a.status || 'pending'}
+                  </span>
+                </td>
+
+                <td style={{ display: 'flex', gap: 8 }}>
+                {a.status !== 'confirmed' && (
+                <button
+                  className="admin-btn"
+                  onClick={async () => {
+                    await fetch(`${API_URL}/api/appointment-requests/${a._id}/confirm`, {
+                      method: 'PUT',
+                      headers
+                    })
+                    fetchAppointments()
+                  }}
+                >
+                  Confirmar
+                </button>
+              )}
+
+                <button
+                  className="btn-danger"
+                  onClick={() => deleteAppointment(a._id)}
+                >
+                  Apagar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+  </>
+)}
 
           {/* PACIENTES */}
           {activeSection === 'patients' && (
