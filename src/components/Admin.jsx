@@ -162,14 +162,31 @@ export default function Admin() {
     fetchAppointments()
   }
 
-  const sendInvite = async (email) => {
-  await fetch(`${API_URL}/api/invites`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ email })
-  })
-  alert(`Convite enviado para ${email}`)
-  fetchInvites()
+const sendInvite = async (email) => {
+  console.log('A enviar convite para:', email)
+  try {
+    const res = await fetch(`${API_URL}/api/invites`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ email })
+    })
+
+    console.log('Resposta:', res.status)
+
+    if (!res.ok) {
+      alert('Erro ao enviar convite')
+      return
+    }
+
+    alert(`Convite enviado para ${email}`)
+    fetchInvites()
+  } catch (err) {
+    console.error('Erro:', err)
+    alert('Erro ao enviar convite')
+  }
 }
 
 
