@@ -162,6 +162,16 @@ export default function Admin() {
     fetchAppointments()
   }
 
+  const sendInvite = async (email) => {
+  await fetch(`${API_URL}/api/invites`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ email })
+  })
+  alert(`Convite enviado para ${email}`)
+  fetchInvites()
+}
+
 
   const createStaff = async () => {
     const formData = new FormData()
@@ -278,7 +288,6 @@ export default function Admin() {
     { section: 'appointments', label: 'Pedidos de Consulta', icon: '📅' },
     { section: 'pacientes', label: null },
     { section: 'patients', label: 'Pacientes', icon: '👤' },
-    { section: 'invites', label: 'Convites', icon: '✉️' },
     { section: 'consultations', label: 'Consultas', icon: '🩺' },
     { section: 'invoices', label: 'Faturas', icon: '🧾' },
     { section: 'clinica', label: null },
@@ -289,7 +298,6 @@ export default function Admin() {
     dashboard: 'Dashboard',
     appointments: 'Pedidos de Consulta',
     patients: 'Pacientes',
-    invites: 'Convites',
     consultations: 'Consultas',
     invoices: 'Faturas',
     staff: 'Equipa / Staff',
@@ -511,13 +519,14 @@ export default function Admin() {
                 {a.status !== 'confirmed' && (
                 <button
                   className="admin-btn"
-                  onClick={async () => {
-                    await fetch(`${API_URL}/api/appointment-requests/${a._id}/confirm`, {
-                      method: 'PUT',
-                      headers
-                    })
-                    fetchAppointments()
-                  }}
+                    onClick={async () => {
+                      await fetch(`${API_URL}/api/appointment-requests/${a._id}/confirm`, {
+                        method: 'PUT',
+                        headers
+                      })
+                      fetchAppointments()
+                      fetchPatients()
+                    }}
                 >
                   Confirmar
                 </button>
@@ -541,28 +550,49 @@ export default function Admin() {
 
           {/* PACIENTES */}
           {activeSection === 'patients' && (
-            <>
-              <div className="table-wrap">
-                <table>
-                  <thead>
-                    <tr><th>Nome</th><th>Email</th><th>ID</th></tr>
-                  </thead>
-                  <tbody>
-                    {patients.map((p, i) => (
-                      <tr key={i}>
-                        <td>{p.name}</td>
-                        <td>{p.email}</td>
-                        <td className="mono">{p._id}</td>
-                      </tr>
-                    ))}
-                    {patients.length === 0 && (
-                      <tr><td colSpan={3} className="empty">Sem pacientes</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </>
+  <>
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Estado</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          {patients.map((p, i) => (
+            <tr key={i}>
+              <td>{p.name}</td>
+              <td>{p.email}</td>
+              <td>{p.phone || '—'}</td>
+              <td>
+                <span className={p.registado ? 'badge badge-green' : 'badge badge-orange'}>
+                  {p.registado ? 'Registado' : 'Por registar'}
+                </span>
+              </td>
+              <td>
+                {!p.registado && (
+                  <button
+                    className="admin-btn"
+                    onClick={() => sendInvite(p.email)}
+                  >
+                    Enviar convite
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+          {patients.length === 0 && (
+            <tr><td colSpan={5} className="empty">Sem pacientes</td></tr>
           )}
+        </tbody>
+      </table>
+    </div>
+  </>
+)}
 
           {/* CONVITES */}
           {activeSection === 'invites' && (
