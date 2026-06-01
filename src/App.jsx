@@ -24,6 +24,8 @@ import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import Admin from './components/Admin'
 
+import Register from './components/Register'
+
 function ScrollToSection() {
   const { pathname, hash } = useLocation()
 
@@ -80,6 +82,7 @@ function Layout() {
         <Route path="/preenchimento-labial" element={<PreenchimentoLabial />} />
         <Route path="/medicina-dentaria" element={<MedicinaDentaria />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register/:token" element={<Register />} />
         <Route
           path="/admin"
           element={

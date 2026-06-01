@@ -163,18 +163,12 @@ export default function Admin() {
   }
 
 const sendInvite = async (email) => {
-  console.log('A enviar convite para:', email)
   try {
     const res = await fetch(`${API_URL}/api/invites`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
+      headers,
       body: JSON.stringify({ email })
     })
-
-    console.log('Resposta:', res.status)
 
     if (!res.ok) {
       alert('Erro ao enviar convite')
