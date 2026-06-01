@@ -10,12 +10,15 @@ export default function Login() {
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
 
-  // 🌍 API BASE URL (local + produção)
   const API = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleLogin()
+  }
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -27,31 +30,46 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const res = await fetch(`${API}/api/auth/login`, {
+      // tenta login como admin
+      const resAdmin = await fetch(`${API}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       })
 
-      const data = await res.json()
-
-      if (!res.ok) {
-        setErro(data.message || 'Erro no login')
+      if (resAdmin.ok) {
+        const data = await resAdmin.json()
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('role', 'admin')
+        navigate('/admin')
         return
       }
 
-      localStorage.setItem('token', data.token)
-      navigate('/admin')
+      // tenta login como paciente
+      const resPatient = await fetch(`${API}/api/auth/patient-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+
+      const dataPatient = await resPatient.json()
+
+      if (resPatient.ok) {
+        localStorage.setItem('token', dataPatient.token)
+        localStorage.setItem('patientId', dataPatient.id)
+        localStorage.setItem('patientName', dataPatient.name)
+        localStorage.setItem('role', 'patient')
+        navigate('/patient')
+        return
+      }
+
+      setErro(dataPatient.message || 'Email ou password incorretos')
 
     } catch (error) {
       setErro('Erro ao ligar ao servidor')
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') handleLogin()
   }
 
   return (
@@ -97,7 +115,6 @@ export default function Login() {
 
           <div className="login-field">
             <label>Password</label>
-
             <div className="password-wrapper">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -107,7 +124,6 @@ export default function Login() {
                 onKeyDown={handleKeyDown}
                 autoComplete="current-password"
               />
-
               <button
                 type="button"
                 className="toggle-password"
@@ -115,7 +131,6 @@ export default function Login() {
                 aria-label="Mostrar password"
               >
                 {showPassword ? (
-                  // olho fechado (sem texto, sem emoji)
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -124,7 +139,6 @@ export default function Login() {
                     <line x1="1" y1="1" x2="23" y2="23" />
                   </svg>
                 ) : (
-                  // olho aberto
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
